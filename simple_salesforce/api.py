@@ -268,7 +268,7 @@ class Salesforce(object):
         return self.set_password(user, password)
 
     # Generic Rest Function
-    def restful(self, path, params, method='GET'):
+    def restful(self, path, params=None, method='GET', data=None):
         """Allows you to make a direct REST call if you know the path
 
         Arguments:
@@ -276,12 +276,16 @@ class Salesforce(object):
         * path: The path of the request
             Example: sobjects/User/ABC123/password'
         * params: dict of parameters to pass to the path
+        * params: dict of data to be serialized to the request body
         * method: HTTP request method, default GET
         """
 
         url = self.base_url + path
-        result = self._call_salesforce(method, url, params=params)
-        if result.status_code != 200:
+        result = self._call_salesforce(method,
+                                       url,
+                                       params=params,
+                                       data=json.dumps(data))
+        if result.status_code not in [200, 204]:
             raise SalesforceGeneralError(url,
                                          path,
                                          result.status_code,
