@@ -285,7 +285,8 @@ class Salesforce(object):
                                        url,
                                        params=params,
                                        data=json.dumps(data))
-        if result.status_code not in [200, 204]:
+        # Consider all status codes in the 2xx range a success
+        if result.status_code >= 300:
             raise SalesforceGeneralError(url,
                                          path,
                                          result.status_code,
